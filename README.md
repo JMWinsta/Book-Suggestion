@@ -5,7 +5,7 @@ Agentic AI refers to autonomous systems that proactively make decisions and adap
 
 ## Files
 
-test_alpha.ipynb: Jupyter notebook containing the implementation, including book database, tools, and agent logic.
+book_recommendation.ipynb: Jupyter notebook containing the implementation, including book database, tools, and agent logic.
 
 ## Setup
 
@@ -15,7 +15,7 @@ Install dependencies:pip install langchain langgraph langchain_ollama
 Ensure Ollama is running locally with the deepseek-r1:1.5b model.
 
 ## Usage
-Run test4.ipynb in a Jupyter environment to execute the recommendation system for three rounds, displaying book choices and reasons.
+Run book_recommendation.ipynb in a Jupyter environment to execute the recommendation system for three rounds, displaying book choices and reasons.
 
 ### Requirements
 
