@@ -25,9 +25,10 @@ Libraries: langchain, langgraph, langchain_ollama
 
 ## Future Enhancements
 
-Dynamic User Input: Allow real-time user preference input instead of static preferences.
-Expanded Book Database: Integrate a larger, external book database via APIs (e.g., Google Books).
-Advanced Feedback Mechanism: Implement nuanced feedback scores (e.g., 1-10) for finer weight adjustments.
-Model Optimization: Use a more powerful LLM (e.g., LLaMA) for improved reasoning accuracy.
-Visualization: Add plots to visualize preference alignment and weight changes over rounds.
+-Dynamic User Input: Allow real-time user preference input instead of static preferences.
+-Expanded Book Database: Integrate a larger, external book database via APIs (e.g., Google Books).
+-Advanced Feedback Mechanism: Implement nuanced feedback scores (e.g., 1-10) for finer weight adjustments.
+-Model Optimization: Use a more powerful LLM (e.g., LLaMA) for improved reasoning accuracy.
+-Visualization: Add plots to visualize preference alignment and weight changes over rounds.
+-UI: A UI with streamlit can be used in the future
 
