@@ -16,11 +16,15 @@ Ensure Ollama is running locally with the deepseek-r1:1.5b model.
 
 ## Usage
 Run test4.ipynb in a Jupyter environment to execute the recommendation system for three rounds, displaying book choices and reasons.
-Requirements
+
+### Requirements
 
 Python 3.10+
+
 Jupyter Notebook
+
 Ollama with deepseek-r1:1.5b
+
 Libraries: langchain, langgraph, langchain_ollama
 
 ## Future Enhancements
