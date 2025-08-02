@@ -41,5 +41,5 @@ Libraries: langchain, langgraph, langchain_ollama
 
 -UI: A UI with streamlit can be used in the future
 
--An MCP can be used to run multiple LLMs at the same time
+-An MCP can be used to run multiple LLMs at the same time and easier content retrieval from the internet
 
