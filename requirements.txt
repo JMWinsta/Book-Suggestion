@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 langchain==0.2.16
+=======
+langchain==0.2.16
+>>>>>>> 6c2d7fc (Initial Test)
      langchain_ollama==0.2.0
