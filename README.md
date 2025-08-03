@@ -7,14 +7,23 @@ Agentic AI refers to autonomous systems that proactively make decisions and adap
 ## Project Structure
 
 Book-Suggestion/
+
 ├── main.py
+
 ├── src/
+
 │   ├── agent/
+
 │   │   └── agent.py
+
 │   ├── recommendation/
+
 │   │   ├── book_recommender.py
+
 │   │   └── state.py
+
 ├── requirements.txt
+
 └── .gitignore
 
 ## Files
