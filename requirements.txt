@@ -1,6 +1,6 @@
-<<<<<<< HEAD
-langchain==0.2.16
-=======
-langchain==0.2.16
->>>>>>> 6c2d7fc (Initial Test)
-     langchain_ollama==0.2.0
+streamlit==1.38.0
+spacy==3.7.6
+langchain==0.3.0
+langchain-ollama==0.1.3
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.25.1
