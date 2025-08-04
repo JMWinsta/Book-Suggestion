@@ -14,6 +14,8 @@ env/
 
 # Project-specific
 weights.json
+parse_errors.log
+llm_parse_errors.log
 
 # IDE and editor files
 .vscode/
@@ -28,6 +30,4 @@ Thumbs.db
 # Miscellaneous
 *.bak
 *.swp
-*.llm_parse_errors
-*.parse_errors
 *~
