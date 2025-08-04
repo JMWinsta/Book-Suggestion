@@ -1,33 +1,33 @@
- # Python
-__pycache__/
-*.py[cod]
-*$py.class
+# Python
+   **/__pycache__/
+   *.py[cod]
+   *$py.class
 
-# Virtual environment
-.venv/
-venv/
-env/
+   # Virtual environment
+   .venv/
+   venv/
+   env/
 
-# Streamlit
-.streamlit/
-*.log
+   # Streamlit
+   .streamlit/
+   *.log
 
-# Project-specific
-weights.json
-parse_errors.log
-llm_parse_errors.log
+   # Project-specific
+   weights.json
+   parse_errors.log
+   llm_parse_errors.log
 
-# IDE and editor files
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
+   # IDE and editor files
+   .vscode/
+   .idea/
+   *.sublime-project
+   *.sublime-workspace
 
-# System files
-.DS_Store
-Thumbs.db
+   # System files
+   .DS_Store
+   Thumbs.db
 
-# Miscellaneous
-*.bak
-*.swp
-*~
+   # Miscellaneous
+   *.bak
+   *.swp
+   *~
