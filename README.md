@@ -22,13 +22,15 @@ Book-Suggestion/
 
 │   │   └── state.py
 
+|   |    __nlu.py
+
 ├── requirements.txt
 
 └── .gitignore
 
 ## Files
 
-main.py,agent.py,book_recommender.py,state.py
+main.py,agent.py,book_recommender.py,state.py, nlu.py
 
 ## Setup
 
