@@ -4,10 +4,15 @@ book_database = {
     "Sapiens": {"creativity": 3, "accuracy": 4, "knowledge": 5},
     "1984": {"creativity": 5, "accuracy": 2, "knowledge": 3},
     "Harry Potter": {"creativity": 5, "accuracy": 3, "knowledge": 2},
+    "Dune": {"creativity": 5, "accuracy": 3, "knowledge": 4},
+    "The Hobbit": {"creativity": 4, "accuracy": 2, "knowledge": 3},
+    "Educated": {"creativity": 3, "accuracy": 5, "knowledge": 4},
+    "Atomic Habits": {"creativity": 2, "accuracy": 4, "knowledge": 5},
+    "Pride and Prejudice": {"creativity": 4, "accuracy": 3, "knowledge": 3},
 }
 
 state = {
-    "preferences": {},  # Populated via CLI input
+    "preferences": {},  # Not used directly, weights are used instead
     "recommended_book": "None",
     "feedback": "0.0",
     "weights": {"creativity": 5.0, "accuracy": 5.0, "knowledge": 5.0},

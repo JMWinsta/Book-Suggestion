@@ -2,11 +2,10 @@ from langchain.agents import Tool, initialize_agent, AgentType
 from langchain_ollama import ChatOllama
 from src.recommendation.book_recommender import recommend_book, simulate_feedback, update_weights
 
-def initialize_book_agent():
-    # Load local Ollama LLM
-    llm = ChatOllama(model="deepseek-r1:1.5b", temperature=0.7)
+def initialize_recommendation_agent():
+    """Initialize an agent for book recommendation."""
+    llm = ChatOllama(model="deepseek-r1:1.5b", temperature=0.5)
 
-    # Define tools with proper name and description
     tools = [
         Tool.from_function(
             func=recommend_book,
@@ -25,11 +24,11 @@ def initialize_book_agent():
         ),
     ]
 
-    # Create the agent
     agent = initialize_agent(
         tools=tools,
         llm=llm,
         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True,
+        verbose=False,
+        handle_parsing_errors=True
     )
     return agent

@@ -1,103 +1,87 @@
-import argparse
-from src.agent.agent import initialize_book_agent
-from src.recommendation.book_recommender import recommend_book, simulate_feedback, update_weights
+import streamlit as st
+import json
+from langchain_ollama import ChatOllama
+from src.recommendation.nlu import parse_preferences
 from src.recommendation.state import book_database, state
+from src.recommendation.book_recommender import recommend_book, simulate_feedback, update_weights
+from fuzzywuzzy import process
 
-def validate_preference(value, name):
+# Cache the LLM for explanation
+@st.cache_resource
+def get_llm():
+    return ChatOllama(model="deepseek-r1:1.5b", temperature=0.5)
+
+def save_weights(weights):
+    """Save weights to a JSON file."""
+    with open("weights.json", "w") as f:
+        json.dump(weights, f)
+
+@st.cache_data
+def load_weights():
+    """Load weights from a JSON file."""
     try:
-        val = float(value)
-        if not 0 <= val <= 10:
-            raise argparse.ArgumentTypeError(f"{name} must be between 0 and 10, got {val}")
-        return val
-    except ValueError:
-        raise argparse.ArgumentTypeError(f"{name} must be a number, got {value}")
-
-def run_recommendation(preferences):
-    try:
-        # Update state with user-provided preferences
-        state["preferences"] = preferences
-
-        # Initialize the agent
-        agent = initialize_book_agent()
-
-        # Step 1: Recommend a book
-        prompt = (
-            f"User preferences: {state['preferences']}.\n"
-            f"Available books: {', '.join(book_database.keys())}.\n"
-            f"Use the RecommendBook tool to select a book based on user preferences and current weights.\n"
-            f"Format: Action: RecommendBook\nAction Input: Select a book\nFinal Answer: [Book title from tool]"
-        )
-        response = agent.run(prompt)
-        matched_title = next(
-            (title for title in book_database if title.lower() == response.lower()),
-            None
-        )
-        if not matched_title:
-            print(f"Error: Invalid book title returned: {response}")
-            return
-
-        state["recommended_book"] = matched_title
-
-        # Step 2: Generate explanation
-        traits = book_database[matched_title]
-        explain_prompt = (
-            f"User preferences: {state['preferences']}. Book traits: {traits}.\n"
-            f"Why is '{matched_title}' a good match? Reply with ONE short sentence.\n"
-            f"Do NOT use tools; provide the answer directly.\n"
-            f"Format: Final Answer: [One-sentence explanation]"
-        )
-        explanation = agent.run(explain_prompt).replace("Final Answer: ", "").strip()
-
-        # Step 3: Simulate feedback
-        feedback_prompt = (
-            f"Use the SimulateFeedback tool to evaluate the recommended book: {matched_title}.\n"
-            f"Format: Action: SimulateFeedback\nAction Input: Evaluate {matched_title}\nFinal Answer: [Feedback from tool]"
-        )
-        feedback = agent.run(feedback_prompt).strip()
-
-        # Step 4: Update weights
-        update_prompt = (
-            f"Use the UpdateWeights tool to adjust weights based on feedback for {matched_title}.\n"
-            f"Format: Action: UpdateWeights\nAction Input: Adjust weights for {matched_title}\nFinal Answer: [Weights from tool]"
-        )
-        weights = agent.run(update_prompt).strip()
-
-        # Step 5: Print result
-        print(f"[Recommendation] {matched_title} | [Reason] {explanation} | [Feedback] {feedback} | [Weights] {weights}")
-
-    except Exception as e:
-        print(f"Error: {str(e)}")
+        with open("weights.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"creativity": 5.0, "accuracy": 5.0, "knowledge": 5.0}
 
 def main():
-    parser = argparse.ArgumentParser(description="Book Recommendation System")
-    parser.add_argument(
-        "--creativity",
-        type=lambda x: validate_preference(x, "Creativity"),
-        required=True,
-        help="Preference for creativity (0-10)"
-    )
-    parser.add_argument(
-        "--accuracy",
-        type=lambda x: validate_preference(x, "Accuracy"),
-        required=True,
-        help="Preference for accuracy (0-10)"
-    )
-    parser.add_argument(
-        "--knowledge",
-        type=lambda x: validate_preference(x, "Knowledge"),
-        required=True,
-        help="Preference for knowledge (0-10)"
-    )
-    args = parser.parse_args()
+    st.title("AI Book Recommendation System")
+    st.write("Enter your preferences in natural language (e.g., 'I want a creative and informative book').")
 
-    preferences = {
-        "creativity": args.creativity,
-        "accuracy": args.accuracy,
-        "knowledge": args.knowledge
-    }
+    # Input for user preferences
+    user_input = st.text_area("Your Preferences", height=100)
+    update_weights_toggle = st.checkbox("Update weights based on feedback", value=False)
+    if st.button("Get Recommendation"):
+        if user_input:
+            try:
+                # Step 1: Parse preferences using NLU module
+                weights = parse_preferences(user_input)
+                state["weights"] = weights
+                save_weights(weights)
+                st.write(f"**Parsed Weights**: {weights}")
 
-    print("=== Recommendation Round ===")
-    run_recommendation(preferences)
+                # Step 2: Recommend a book using the tool directly
+                response = recommend_book("")
+                book_title = response.split("Recommended book:")[-1].split("based on")[0].strip()
+
+                # Fuzzy match to handle partial titles
+                matched_title, score = process.extractOne(book_title, book_database.keys())
+                if score < 80:
+                    st.error(f"Invalid book title returned: {book_title}")
+                    return
+                state["recommended_book"] = matched_title
+
+                # Step 3: Generate explanation using direct LLM call
+                llm = get_llm()
+                traits = book_database[matched_title]
+                explain_prompt = (
+                    f"Weights: {weights}. Book traits: {traits}.\n"
+                    f"Why is '{matched_title}' a good match? Reply with ONE short sentence.\n"
+                    f"Do not include <think> blocks or additional reasoning.\n"
+                    f"Format: [One-sentence explanation]"
+                )
+                explanation = llm.invoke(explain_prompt).content.strip()
+
+                # Step 4: Simulate feedback using tool directly
+                feedback = simulate_feedback("")
+
+                # Step 5: Update weights if toggled
+                updated_weights = weights
+                if update_weights_toggle:
+                    updated_weights = update_weights("")
+                    state["weights"] = eval(updated_weights.split("Updated weights: ")[-1])
+                    save_weights(state["weights"])
+
+                # Display results
+                st.success(f"**Recommendation**: {matched_title}")
+                st.write(f"**Reason**: {explanation}")
+                st.write(f"**Feedback**: {feedback}")
+                if update_weights_toggle:
+                    st.write(f"**Updated Weights**: {updated_weights}")
+
+            except Exception as e:
+                st.error(f"Error: {str(e)}")
 
 if __name__ == "__main__":
     main()

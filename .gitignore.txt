@@ -1,10 +1,33 @@
- .venv/
- venv/
- 
- # Python cache files
- __pycache__/
- *.pyc
- 
- # IDE and editor files
- .idea/
- *.swp
+ # Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Streamlit
+.streamlit/
+*.log
+
+# Project-specific
+weights.json
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Miscellaneous
+*.bak
+*.swp
+*.llm_parse_errors
+*.parse_errors
+*~
